@@ -1,15 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Warframeaccountant.database_action;
 
 namespace Warframeaccountant
@@ -28,6 +21,7 @@ namespace Warframeaccountant
         {
             services.AddControllers();
             services.Add(new ServiceDescriptor(typeof(DatabaseConnection), DatabaseConnection.getInstance(Configuration.GetSection("ConnectionString").GetSection("DefaultConnection").Value)));
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -37,6 +31,12 @@ namespace Warframeaccountant
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(builder =>
+                        builder
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
 
             app.UseHttpsRedirection();
 
